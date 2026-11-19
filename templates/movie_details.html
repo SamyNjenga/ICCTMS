@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} | ICCTMS</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="movie-details-page">
+
+<header class="navbar">
+    <a href="{{ url_for('home') }}" class="logo">ICCTMS</a>
+
+    <nav class="nav-links">
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('movies') }}">Movies</a>
+    </nav>
+
+    <div class="nav-actions">
+        {% if session.get('customer_id') %}
+            <span class="login-link">
+                Welcome, {{ session.get('customer_name', 'Customer') }}
+            </span>
+
+            <form action="{{ url_for('logout') }}" method="POST" class="logout-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="register-btn">Logout</button>
+            </form>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="login-link">Login</a>
+        {% endif %}
+    </div>
+</header>
+
+
+    <main class="movie-details-container">
+
+        <a href="{{ url_for('movies') }}" class="movie-back-link">
+            &larr; Back to Movies
+        </a>
+
+        <section class="movie-hero">
+
+            <div class="movie-hero-info">
+                <p class="movie-eyebrow">NOW SHOWING AT ICCTMS</p>
+
+                <h1>{{ movie.title }}</h1>
+
+                <div class="movie-meta">
+                    <span>{{ movie.genre }}</span>
+                    <span>
+                        {{ movie.duration // 60 }}h
+                        {{ '%02d'|format(movie.duration % 60) }}min
+                    </span>
+
+                    {% if movie.release_date %}
+                        <span>
+                            {{ movie.release_date.strftime('%d %b %Y') }}
+                        </span>
+                    {% endif %}
+
+                    {% if movie.rating %}
+                        <span class="movie-rating">
+                            ★ {{ movie.rating }}/10
+                        </span>
+                    {% endif %}
+                </div>
+
+                {% if movie.description %}
+                    <div class="movie-synopsis">
+                        <h2>Synopsis</h2>
+                        <p>{{ movie.description }}</p>
+                    </div>
+                {% endif %}
+
+                <a href="#showtimes" class="movie-primary-link">
+                    Explore Showtimes
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
+            </div>
+
+<div
+    class="movie-hero-artwork movie-artwork-{{ movie.movie_id }}"
+    aria-hidden="true">
+</div>
+
+            {% set poster_files = {
+                                    5: 'images/spiderman-brand-new-day.jpg',
+                                    6: 'images/street-fighter.jpg',
+                                    7: 'images/forgotten-island.jpg',
+                                    8: 'images/whalefall.jpeg',
+                                    11: 'images/verity.jpg',
+                                    12: 'images/clayface.jpg',
+                                    13: 'images/the-odyssey.jpg',
+                                    14: 'images/sunrise-on-the-reaping.jpg',
+                                    15: 'images/ramayana-rise-of-a-legend.jpg',
+                                    16: 'images/how-to-rob-a-bank.jpg',
+                                    17: 'images/wild-horse-nine.jpg',
+                                    18: 'images/hexed.jpg',
+                                    19: 'images/avengers-doomsday.jpg',
+                                    20: 'images/dune-part-three.jpg'
+            } %}
+
+{% if movie.movie_id in poster_files %}
+    <img
+        class="movie-hero-poster"
+        src="{{ url_for('static', filename=poster_files[movie.movie_id]) }}"
+        alt="{{ movie.title }} movie poster">
+{% endif %}
+
+
+            
+
+
+        </section>
+
+        <section class="showtimes-section" id="showtimes">
+            <div class="showtimes-heading">
+                <div>
+                    <p class="movie-eyebrow">PLAN YOUR VISIT</p>
+                    <h2>Available Showtimes</h2>
+                    <p>Select a cinema and screening that suits you.</p>
+                </div>
+            </div>
+
+            {% if showtimes %}
+                <div class="showtimes-grid">
+                    {% for showtime in showtimes %}
+                        <article class="showtime-card">
+
+
+                            <!-- Cinema exterior photograph -->
+<div class="cinema-photo">
+    {% if showtime.cinema_id == 1 %}
+        <img
+            src="{{ url_for('static', filename='images/cinema-nairobi.jpg') }}"
+            alt="ICCTMS Cinema Nairobi exterior"
+            loading="lazy"
+        >
+
+    {% elif showtime.cinema_id == 2 %}
+        <img
+            src="{{ url_for('static', filename='images/cinema-westlands.jpg') }}"
+            alt="ICCTMS Cinema Westlands exterior"
+            loading="lazy"
+        >
+
+    {% endif %}
+</div>
+
+                            <div class="showtime-card-heading">
+                                <div class="cinema-icon" aria-hidden="true">
+                                    <span>▶</span>
+                                </div>
+                                <div>
+                                    <h3>{{ showtime.cinema_name }}</h3>
+                                    <p>{{ showtime.cinema_location }}</p>
+                                </div>
+                            </div>
+
+                            <div class="showtime-date">
+                                <span class="showtime-label">SCREENING DATE</span>
+                                <strong>
+                                    {{ showtime.show_date.strftime('%A, %d %B %Y') }}
+                                </strong>
+                            </div>
+
+                            <div class="showtime-details-grid">
+                                <div>
+                                    <span class="showtime-label">SCREEN</span>
+                                    <strong>{{ showtime.screen_name }}</strong>
+                                </div>
+
+                                <div>
+                                    <span class="showtime-label">CAPACITY</span>
+                                    <strong>{{ showtime.capacity }} seats</strong>
+                                </div>
+
+                                <div>
+                                    <span class="showtime-label">STARTS</span>
+                                    <strong>
+                                        {{ showtime.start_time }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span class="showtime-label">ENDS</span>
+                                    <strong>
+                                        {{ showtime.end_time }}
+                                    </strong>
+                                </div>
+                            </div>
+
+                            
+                                <a href="{{ url_for('seat_selection', showtime_id=showtime.showtime_id) }}"
+                                    class="showtime-select-button">
+                                    Choose Seats
+                                </a>
+
+
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-showtimes">
+                    <h3>No scheduled showtimes yet</h3>
+                    <p>
+                        There are currently no screenings scheduled for this
+                        movie. Please check again later.
+                    </p>
+                    <a href="{{ url_for('movies') }}" class="movie-back-link">
+                        Explore Other Movies
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+
+    </main>
+
+    <footer class="movie-details-footer">
+        <p>&copy; 2026 ICCTMS. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

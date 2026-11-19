@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Status | ICCTMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="booking-status-container">
+        <h1>Booking Created</h1>
+
+        <p>Your booking has been recorded successfully.</p>
+
+        <div class="booking-status-details">
+            <p><strong>Booking Reference:</strong> #{{ booking_id }}</p>
+            <p><strong>Status:</strong> Pending Payment</p>
+            <p><strong>Total Amount:</strong> KSh {{ "%.2f"|format(total_amount) }}</p>
+        </div>
+
+        <p>
+            Your booking is not yet confirmed. Payment has not been processed.
+        </p>
+
+        <a href="{{ url_for('movies') }}">Back to Movies</a>
+    </main>
+</body>
+</html>

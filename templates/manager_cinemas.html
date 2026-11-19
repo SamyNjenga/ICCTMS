@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema & Screen Management | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="manager-container">
+
+    <div class="manager-movie-heading">
+        <h2>Cinema & Screen Management</h2>
+        <a href="{{ url_for('add_screen') }}"
+   class="manager-edit-button">
+    Add Screen
+</a>
+        <a href="{{ url_for('manager_dashboard') }}"
+           class="manager-back-link">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <section class="manager-profile">
+
+        <h3>Registered Cinemas</h3>
+
+        {% if cinemas %}
+            {% for cinema in cinemas %}
+
+                <div class="manager-cinema-card">
+
+                    <div class="manager-cinema-heading">
+                        <div>
+                            <h3>{{ cinema.name }}</h3>
+                            <p>{{ cinema.location }}</p>
+                        </div>
+
+                        <span>
+                            {% set cinema_screens = screens
+                                | selectattr('cinema_id', 'equalto', cinema.cinema_id)
+                                | list %}
+                            {{ cinema_screens|length }} Screens
+                        </span>
+                    </div>
+
+                    {% if cinema_screens %}
+                        <table class="manager-movie-table">
+                            <thead>
+    <tr>
+        <th>Screen ID</th>
+        <th>Screen Name</th>
+        <th>Seating Capacity</th>
+        <th>Actions</th>
+    </tr>
+</thead>
+
+<tbody>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+    {% for screen in cinema_screens %}
+        <tr>
+            <td>{{ screen.screen_id }}</td>
+            <td>{{ screen.screen_name }}</td>
+            <td>{{ screen.capacity }} Seats</td>
+            <td>
+                <a href="{{ url_for('edit_screen', screen_id=screen.screen_id) }}"
+                   class="manager-edit-button">
+                    Edit
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+
+    <script>
+    document.querySelectorAll(".flash-message").forEach(message => {
+        setTimeout(() => {
+            message.style.transition = "opacity 0.5s ease";
+            message.style.opacity = "0";
+
+            setTimeout(() => message.remove(), 500);
+        }, 4000);
+    });
+</script>
+</tbody>
+    
+                        </table>
+                    {% else %}
+                        <p>No screens registered for this cinema.</p>
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+        {% else %}
+            <p>No cinemas have been registered.</p>
+        {% endif %}
+
+    </section>
+
+</div>
+</body>
+</html>

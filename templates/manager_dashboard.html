@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="manager-page">
+
+    <main class="manager-container">
+
+        <header class="manager-header">
+            <div class="manager-brand">
+                ICCTMS CINEMA TICKETING
+            </div>
+
+            
+<div class="manager-account">
+    <span>{{ manager.name }}</span>
+    <span class="manager-role">MANAGER</span>
+
+    <form action="{{ url_for('logout') }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="manager-logout-btn">
+            Log Out
+        </button>
+    </form>
+</div>
+</header>
+
+<section class="manager-welcome">
+    <p class="manager-label">MANAGEMENT PORTAL</p>
+
+    <h1>Welcome, {{ manager.name }}</h1>
+</section>
+
+            <p>
+                Manage cinema operations, monitor performance
+                and oversee system activities.
+            </p>
+        </section>
+
+        <section class="manager-profile">
+            <h2>Manager Profile</h2>
+
+            <div class="manager-profile-details">
+                <div>
+                    <span>Full Name</span>
+                    <strong>{{ manager.name }}</strong>
+                </div>
+
+                <div>
+                    <span>Email Address</span>
+                    <strong>{{ manager.email }}</strong>
+                </div>
+
+                <div>
+                    <span>Username</span>
+                    <strong>{{ manager.username }}</strong>
+                </div>
+
+                <div>
+                    <span>Account Status</span>
+                    <strong class="manager-active">
+                        {{ manager.account_status }}
+                    </strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="manager-sections">
+            <h2>Management Overview</h2>
+
+            <div class="manager-grid">
+
+                <a href="{{ url_for('manager_movies') }}"
+                class="manager-card manager-card-link">
+
+            <h3>Movie Management</h3>
+            <p>Add, update and manage cinema movies.</p>
+
+</a>
+        <a href="{{ url_for('manager_showtimes') }}"
+            class="manager-card manager-card-link">
+             <h3>Showtime Management</h3>
+            <p>Schedule and manage cinema movie screenings.</p>
+        </a>
+
+
+<a href="{{ url_for('manager_cinemas') }}"
+   class="manager-card manager-card-link">
+    <h3>Cinema & Screen Management</h3>
+    <p>View and manage cinema locations, screens and seating capacities.</p>
+</a>
+
+
+                <a href="{{ url_for('manager_bookings') }}"
+   class="manager-card manager-card-link">
+
+    <h3>Booking Management</h3>
+    <p>Review and oversee customer reservations.</p>
+
+</a>
+
+                <a href="{{ url_for('manager_customers') }}"
+   class="manager-card manager-card-link">
+    <h3>Customer Management</h3>
+    <p>View and manage customer records.</p>
+</a>
+
+                <a href="{{ url_for('manager_staff') }}"
+   class="manager-card manager-card-link">
+    <h3>Staff Management</h3>
+    <p>Oversee employee accounts and records.</p>
+</a>
+
+                <a href="{{ url_for('manager_reports') }}"
+   class="manager-card manager-card-link">
+    <h3>Reports and Analytics</h3>
+    <p>Monitor cinema performance and transactions.</p>
+</a>
+
+
+<a href="{{ url_for('manager_audit_logs') }}"
+   class="manager-card manager-card-link">
+
+    <h3>Audit Logs</h3>
+    <p>Review and monitor activities performed within the system.</p>
+
+</a>
+
+
+<a href="{{ url_for('manager_support_requests') }}"
+   class="manager-card manager-card-link">
+
+    <h3>Support Requests</h3>
+    <p>View and manage enquiries submitted by customers and visitors.</p>
+
+</a>
+
+
+            </div>
+        </section>
+
+        <footer class="manager-footer">
+            ICCTMS | Manager Portal
+        </footer>
+
+    </main>
+
+</body>
+</html>

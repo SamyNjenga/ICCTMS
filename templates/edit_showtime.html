@@ -1,0 +1,261 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Showtime | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="manager-page">
+
+    <main class="manager-container">
+
+        <header class="manager-header">
+            <div class="manager-brand">ICCTMS CINEMA TICKETING</div>
+
+            <div class="manager-account">
+                <span>{{ session.get("manager_name") }}</span>
+                <span class="manager-role">MANAGER</span>
+            </div>
+        </header>
+
+        <section class="manager-welcome">
+            <p class="manager-label">MANAGEMENT PORTAL</p>
+            <h1>Edit Showtime</h1>
+            <p>Update the details of an existing movie screening.</p>
+        </section>
+
+        <section class="manager-profile">
+
+            <h2>Screening Details</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="manager-form-{{ 'error' if category == 'error' else 'success' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST"
+                  action="{{ url_for('update_showtime', showtime_id=showtime.showtime_id) }}"
+                  class="manager-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label for="movie_id">Select Movie</label>
+
+                    <select name="movie_id" id="movie_id" required>
+                        <option value="">Choose a movie</option>
+
+                        {% for movie in movies %}
+                            <option value="{{ movie.movie_id }}"
+                                    data-duration="{{ movie.duration }}"
+                                    {% if movie.movie_id == showtime.movie_id %}selected{% endif %}>
+                                {{ movie.title }} ({{ movie.duration }} minutes)
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cinema_id">Select Cinema</label>
+
+                    <select name="cinema_id" id="cinema_id" required>
+                        <option value="">Choose a cinema</option>
+
+                        {% for cinema in cinemas %}
+                            <option value="{{ cinema.cinema_id }}"
+                                    {% if cinema.cinema_id == showtime.cinema_id %}selected{% endif %}>
+                                {{ cinema.name }} - {{ cinema.location }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="screen_id">Select Screen</label>
+
+                    <select name="screen_id" id="screen_id" required>
+                        <option value="">Choose a screen</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="show_date">Screening Date</label>
+
+                    <input type="date"
+                           name="show_date"
+                           id="show_date"
+                           value="{{ showtime.show_date|string }}"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="start_time">Starting Time</label>
+
+                    <input type="time"
+                           name="start_time"
+                           id="start_time"
+                           value="{{ showtime.start_time|string|truncate(5, true, '') }}"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label>Movie Duration</label>
+
+                    <input type="text"
+                           id="movie_duration"
+                           value="Select a movie first"
+                           readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Calculated End Time</label>
+
+                    <input type="text"
+                           id="end_time_display"
+                           value="Select a movie and starting time"
+                           readonly>
+                </div>
+
+                <div class="manager-movie-actions">
+
+                    <button type="submit"
+                            class="manager-edit-button">
+                        Update Showtime
+                    </button>
+
+                    <a href="{{ url_for('manager_showtimes') }}"
+                       class="manager-back-link">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <a href="{{ url_for('manager_showtimes') }}"
+           class="manager-back-link">
+            ← Back to Showtimes
+        </a>
+
+        <footer class="manager-footer">
+            ICCTMS | Manager Portal
+        </footer>
+
+    </main>
+
+    <script type="application/json" id="screen-data">
+        {{ screens | tojson }}
+    </script>
+
+    <script>
+        const cinemaSelect = document.getElementById("cinema_id");
+        const screenSelect = document.getElementById("screen_id");
+        const movieSelect = document.getElementById("movie_id");
+        const startTimeInput = document.getElementById("start_time");
+
+        const durationDisplay = document.getElementById("movie_duration");
+        const endTimeDisplay = document.getElementById("end_time_display");
+
+        const screenData = JSON.parse(
+            document.getElementById("screen-data").textContent
+        );
+
+        const currentScreenId = "{{ showtime.screen_id }}";
+
+        // Populate screens belonging to the selected cinema
+        function populateScreens() {
+
+            const selectedCinema = cinemaSelect.value;
+
+            screenSelect.innerHTML =
+                '<option value="">Choose a screen</option>';
+
+            if (!selectedCinema) {
+                screenSelect.disabled = true;
+                return;
+            }
+
+            const availableScreens = screenData.filter(
+                screen => String(screen.cinema_id) === selectedCinema
+            );
+
+            availableScreens.forEach(screen => {
+
+                const option = document.createElement("option");
+
+                option.value = screen.screen_id;
+
+                option.textContent =
+                    screen.screen_name +
+                    " (" + screen.capacity + " seats)";
+
+                if (String(screen.screen_id) === currentScreenId) {
+                    option.selected = true;
+                }
+
+                screenSelect.appendChild(option);
+            });
+
+            screenSelect.disabled = false;
+        }
+
+        // Calculate the screening end time
+        function calculateEndTime() {
+
+            const selectedMovie =
+                movieSelect.options[movieSelect.selectedIndex];
+
+            const duration = Number(
+                selectedMovie.dataset.duration
+            );
+
+            const startTime = startTimeInput.value;
+
+            if (!selectedMovie.value || !startTime || !duration) {
+                durationDisplay.value = "Select a movie first";
+                endTimeDisplay.value =
+                    "Select a movie and starting time";
+                return;
+            }
+
+            const [hours, minutes] = startTime.split(":").map(Number);
+
+            const totalMinutes = hours * 60 + minutes + duration;
+
+            const endHours = Math.floor(totalMinutes / 60) % 24;
+            const endMinutes = totalMinutes % 60;
+
+            const formattedEnd =
+                String(endHours).padStart(2, "0") +
+                ":" +
+                String(endMinutes).padStart(2, "0");
+
+            durationDisplay.value = duration + " minutes";
+            endTimeDisplay.value = formattedEnd;
+        }
+
+        cinemaSelect.addEventListener("change", populateScreens);
+
+        movieSelect.addEventListener("change", calculateEndTime);
+
+        startTimeInput.addEventListener("input", calculateEndTime);
+
+        // Load the existing screening details when the page opens
+        populateScreens();
+        calculateEndTime();
+
+    </script>
+
+</body>
+</html>

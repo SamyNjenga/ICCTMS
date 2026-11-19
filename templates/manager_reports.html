@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports and Analytics | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<div class="manager-container">
+
+    <div class="manager-movie-heading">
+        <h2>Reports and Analytics</h2>
+
+
+<!-- Report Date Filters -->
+<section class="manager-card report-filter-section">
+
+    <h3>Filter Report Period</h3>
+
+    <form method="GET"
+          action="{{ url_for('manager_reports') }}"
+          class="report-filter-form">
+
+        <div>
+            <label for="start_date">Start Date</label>
+            <input type="date"
+                   id="start_date"
+                   name="start_date"
+                   value="{{ start_date or '' }}">
+        </div>
+
+        <div>
+            <label for="end_date">End Date</label>
+            <input type="date"
+                   id="end_date"
+                   name="end_date"
+                   value="{{ end_date or '' }}">
+        </div>
+
+        <div class="report-filter-actions">
+            <button type="submit" class="manager-edit-button">
+                Apply
+            </button>
+
+            <a href="{{ url_for('manager_reports') }}"
+               class="manager-back-link">
+                Reset
+            </a>
+        </div>
+
+    </form>
+
+</section>
+
+
+        <a href="{{ url_for('manager_dashboard') }}"
+           class="manager-back-link">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Booking Overview -->
+    <section class="report-section">
+
+        <h3>Booking Overview</h3>
+
+        <div class="report-grid">
+
+            <div class="report-card">
+                <h4>Total Bookings</h4>
+                <p>{{ reports.total_bookings or 0 }}</p>
+            </div>
+
+            <div class="report-card">
+                <h4>Confirmed Bookings</h4>
+                <p>{{ reports.confirmed_bookings or 0 }}</p>
+            </div>
+
+            <div class="report-card">
+                <h4>Pending Bookings</h4>
+                <p>{{ reports.pending_bookings or 0 }}</p>
+            </div>
+
+            <div class="report-card">
+                <h4>Cancelled Bookings</h4>
+                <p>{{ reports.cancelled_bookings or 0 }}</p>
+            </div>
+
+            <div class="report-card">
+                <h4>Failed Bookings</h4>
+                <p>{{ reports.failed_bookings or 0 }}</p>
+            </div>
+
+            <div class="report-card">
+                <h4>Expired Bookings</h4>
+                <p>{{ reports.expired_bookings or 0 }}</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Payment Overview -->
+    <section class="report-section">
+
+        <h3>Payment Overview</h3>
+
+        <div class="report-grid">
+
+            <div class="report-card">
+                <h4>Successful Payments</h4>
+                <p>{{ reports.successful_payments or 0 }}</p>
+            </div>
+
+            <div class="report-card">
+                <h4>Pending Payments</h4>
+                <p>{{ reports.pending_payments or 0 }}</p>
+            </div>
+
+
+<div class="report-card">
+    <h4>Bookings Without Payment</h4>
+    <p>{{ reports.unpaid_bookings or 0 }}</p>
+</div>
+
+
+            <div class="report-card">
+                <h4>Failed Payments</h4>
+                <p>{{ reports.failed_payments or 0 }}</p>
+            </div>
+
+            <div class="report-card">
+                <h4>Refunded Payments</h4>
+                <p>{{ reports.refunded_payments or 0 }}</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Financial Overview -->
+    <section class="report-section">
+
+        <h3>Financial Overview</h3>
+
+        <div class="report-grid">
+
+            <div class="report-card report-revenue">
+                <h4>Total Revenue Collected</h4>
+                <p>KSh {{ "%.2f"|format(reports.total_revenue or 0) }}</p>
+            </div>
+
+            <div class="report-card report-refunds">
+                <h4>Total Refunded</h4>
+                <p>KSh {{ "%.2f"|format(reports.total_refunded or 0) }}</p>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>

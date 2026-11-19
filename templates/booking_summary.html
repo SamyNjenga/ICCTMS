@@ -1,0 +1,444 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Booking Summary | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        
+/* =========================================
+   ICCTMS — BOOKING SUMMARY
+   Black and Gold Cinematic Theme
+========================================= */
+
+.booking-summary-container {
+    width: min(1000px, 94%);
+    margin: 40px auto;
+    padding: 24px;
+    color: var(--text-primary, #ffffff);
+}
+
+/* Back navigation */
+
+.booking-back-navigation {
+    display: inline-block;
+    margin-bottom: 35px;
+    color: var(--gold-primary, #D6A84B);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.booking-back-navigation:hover {
+    color: var(--gold-hover, #EDC36C);
+}
+
+/* Page heading */
+
+.booking-page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 15px auto 45px;
+}
+
+.booking-page-header .booking-eyebrow {
+    color: var(--gold-primary, #D6A84B);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+}
+
+.booking-page-header h1 {
+    color: #ffffff;
+    font-size: clamp(32px, 4vw, 46px);
+    margin: 0 0 18px;
+}
+
+.booking-page-header p {
+    color: #aaaaaa;
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Main booking card */
+
+.booking-summary-card {
+    margin: 25px 0;
+    padding: 30px;
+    border: 1px solid rgba(214, 168, 75, 0.35);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #202020, #141414);
+    color: #ffffff;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+
+/* Movie title */
+
+.booking-summary-card h2 {
+    color: var(--gold-primary, #D6A84B);
+    font-size: 26px;
+    text-align: center;
+    margin: 0 0 28px;
+}
+
+/* Screening information */
+
+.booking-screening-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 35px;
+}
+
+.booking-info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 85px;
+    padding: 18px 14px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    text-align: center;
+}
+
+.booking-info-label {
+    color: var(--gold-primary, #D6A84B);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.booking-info-item strong {
+    color: #f1f5f9;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+/* Selected seats heading */
+
+.booking-summary-card h3 {
+    color: #ffffff;
+    font-size: 19px;
+    margin: 0 0 18px;
+}
+
+/* Seats table */
+
+.booking-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.booking-seat-list {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.booking-seat-list th,
+.booking-seat-list td {
+    padding: 16px 14px;
+    border-bottom: 1px solid #383838;
+    text-align: left;
+}
+
+.booking-seat-list th {
+    color: var(--gold-primary, #D6A84B);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.booking-seat-list td {
+    color: #e5e7eb;
+    font-size: 15px;
+}
+
+.booking-seat-list td:last-child,
+.booking-seat-list th:last-child {
+    text-align: right;
+}
+
+/* Total amount */
+
+.booking-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(214,168,75,0.4);
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.booking-total span:last-child {
+    color: var(--gold-primary, #D6A84B);
+    font-size: 23px;
+}
+
+/* Action buttons */
+
+.booking-summary-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.booking-summary-actions a,
+.booking-summary-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.booking-back-link {
+    color: #ffffff;
+    background: #292929;
+    border: 1px solid #555555;
+}
+
+.booking-back-link:hover {
+    border-color: var(--gold-primary, #D6A84B);
+    color: var(--gold-primary, #D6A84B);
+}
+
+.booking-confirm-button {
+    border: 1px solid var(--gold-primary, #D6A84B);
+    background: var(--gold-primary, #D6A84B);
+    color: #111111;
+}
+
+.booking-confirm-button:hover {
+    background: var(--gold-hover, #EDC36C);
+    transform: translateY(-2px);
+}
+
+/* Booking notice */
+
+.booking-notice {
+    margin: 28px auto;
+    max-width: 650px;
+    color: #999999;
+    font-size: 13px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+/* Responsive layout */
+
+@media (max-width: 600px) {
+
+    .booking-summary-container {
+        width: 96%;
+        margin: 25px auto;
+        padding: 14px;
+    }
+
+    .booking-page-header {
+        margin: 15px auto 35px;
+    }
+
+    .booking-screening-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-summary-card {
+        padding: 20px 15px;
+    }
+
+    .booking-summary-card h2 {
+        font-size: 22px;
+    }
+
+    .booking-seat-list th,
+    .booking-seat-list td {
+        padding: 12px 8px;
+        font-size: 13px;
+    }
+
+    .booking-summary-actions {
+        flex-direction: column;
+    }
+
+    .booking-summary-actions a,
+    .booking-summary-actions form,
+    .booking-summary-actions button {
+        width: 100%;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="{{ url_for('home') }}" class="logo">ICCTMS</a>
+
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('movies') }}">Movies</a>
+        </nav>
+    </header>
+
+    
+<main class="booking-summary-container">
+
+
+    <a class="booking-back-navigation"
+       href="{{ url_for('seat_selection',
+                        showtime_id=showtime.showtime_id,
+                        seat_ids=selected_seats|map(attribute='seat_id')|list) }}">
+        &larr; Back to Seat Selection
+    </a>
+
+    <div class="booking-page-header">
+
+        <span class="booking-eyebrow">REVIEW YOUR SELECTION</span>
+
+        <h1>Booking Summary</h1>
+
+        <p>
+            Check your screening and seat details before continuing.
+        </p>
+
+    </div>
+
+    <section class="booking-summary-card">
+
+        <h2>{{ showtime.movie_title }}</h2>
+
+        <div class="booking-screening-grid">
+
+            <div class="booking-info-item">
+                <span class="booking-info-label">CINEMA</span>
+                <strong>
+                    {{ showtime.cinema_name }} — {{ showtime.cinema_location }}
+                </strong>
+            </div>
+
+            <div class="booking-info-item">
+                <span class="booking-info-label">SCREEN</span>
+                <strong>{{ showtime.screen_name }}</strong>
+            </div>
+
+            <div class="booking-info-item">
+                <span class="booking-info-label">DATE</span>
+                <strong>
+                    {{ showtime.show_date.strftime('%A, %d %B %Y') }}
+                </strong>
+            </div>
+
+            <div class="booking-info-item">
+                <span class="booking-info-label">TIME</span>
+                <strong>
+                    {{ start_time_display }} – {{ end_time_display }}
+                </strong>
+            </div>
+
+        </div>
+
+        <h3>Selected Seats</h3>
+
+        <div class="booking-table-wrapper">
+
+            <table class="booking-seat-list">
+
+                <thead>
+                    <tr>
+                        <th>Seat</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for seat in selected_seats %}
+                    <tr>
+                        <td>{{ seat.seat_number }}</td>
+                        <td>{{ seat.seat_type }}</td>
+                        <td>KSh {{ "{:,.2f}".format(seat.price) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="booking-total">
+            <span>Total Amount</span>
+            <span>KSh {{ "{:,.2f}".format(total_amount) }}</span>
+        </div>
+
+    </section>
+
+    <div class="booking-summary-actions">
+
+        <a class="booking-back-link"
+           href="{{ url_for('seat_selection',
+                            showtime_id=showtime.showtime_id,
+                            seat_ids=selected_seats|map(attribute='seat_id')|list) }}">
+            Change Seats
+        </a>
+
+        <form action="{{ url_for('confirm_booking',
+                                 showtime_id=showtime.showtime_id) }}"
+              method="POST"
+              style="display: inline-flex; margin: 0;">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            {% for seat in selected_seats %}
+                <input type="hidden"
+                       name="seat_ids"
+                       value="{{ seat.seat_id }}">
+            {% endfor %}
+
+            <button type="submit" class="booking-confirm-button">
+                Confirm Selection
+            </button>
+
+        </form>
+
+    </div>
+
+    <p class="booking-notice">
+    Your booking will be temporarily reserved when you confirm your
+    selection. Payment will be required to complete your booking.
+</p>
+</main>
+
+
+    <footer class="movie-details-footer">
+        <p>&copy; 2026 ICCTMS. All rights reserved.</p>
+    </footer>
+</body>
+</html>

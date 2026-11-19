@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Verification | ICCTMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="employee-verification-page">
+
+    <main class="employee-verification-container">
+
+        <header class="verification-page-header">
+            <div class="verification-brand">
+                <h1>ICCTMS</h1>
+                <span>EMPLOYEE PORTAL</span>
+            </div>
+
+            <a href="{{ url_for('employee_dashboard') }}"
+               class="verification-back-link">
+                Back to Dashboard
+            </a>
+        </header>
+
+        <section class="verification-page-intro">
+            <p class="employee-section-label">DAILY OPERATIONS</p>
+            <h2>Ticket Verification</h2>
+            <p>Review ticket details and validate customer admission.</p>
+        </section>
+
+        <section class="verification-result">
+
+            {% if error %}
+
+                <div class="verification-error-panel">
+                    <div class="verification-status-icon">!</div>
+
+                    <h3>Ticket Not Found</h3>
+                    <p>{{ error }}</p>
+
+                    <div class="searched-ticket-code">
+                        <span>SEARCHED TICKET CODE</span>
+                        <strong>{{ searched_code }}</strong>
+                    </div>
+
+                    <p class="verification-help-text">
+                        Check the ticket code and try searching again.
+                    </p>
+                </div>
+
+            {% elif ticket %}
+
+                <div class="verification-ticket-card">
+
+                    <div class="verification-card-top">
+                        <span class="verification-card-label">
+                            TICKET DETAILS
+                        </span>
+
+                        {% if ticket.ticket_status == 'ACTIVE' %}
+                            <span class="ticket-status-badge status-active">
+                                ACTIVE
+                            </span>
+                        {% elif ticket.ticket_status == 'USED' %}
+                            <span class="ticket-status-badge status-used">
+                                USED
+                            </span>
+                        {% else %}
+                            <span class="ticket-status-badge status-invalid">
+                                {{ ticket.ticket_status }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="verification-movie-heading">
+                        <p>{{ ticket.genre }}</p>
+                        <h3>{{ ticket.movie_title }}</h3>
+                    </div>
+
+                    <div class="verification-ticket-code">
+                        <span>UNIQUE TICKET CODE</span>
+                        <strong>{{ ticket.ticket_code }}</strong>
+                    </div>
+
+                    <section class="verification-details-section">
+                        <h4>Booking Information</h4>
+
+                        <div class="verification-details-grid">
+
+                            <div class="verification-detail-item">
+                                <span>Booking Reference</span>
+                                <strong>{{ ticket.booking_id }}</strong>
+                            </div>
+
+                            <div class="verification-detail-item">
+                                <span>Booked Seats</span>
+                                <strong>{{ ticket.booked_seats }}</strong>
+                            </div>
+
+                            <div class="verification-detail-item">
+                                <span>Amount Paid</span>
+                                <strong>KSh {{ ticket.total_amount }}</strong>
+                            </div>
+
+                            <div class="verification-detail-item">
+                                <span>Payment Method</span>
+                                <strong>{{ ticket.payment_method }}</strong>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <section class="verification-details-section">
+                        <h4>Cinema and Showtime</h4>
+
+                        <div class="verification-details-grid">
+
+                            <div class="verification-detail-item">
+                                <span>Cinema</span>
+                                <strong>{{ ticket.cinema_name }}</strong>
+                            </div>
+
+                            <div class="verification-detail-item">
+                                <span>Location</span>
+                                <strong>{{ ticket.cinema_location }}</strong>
+                            </div>
+
+                            <div class="verification-detail-item">
+                                <span>Screen</span>
+                                <strong>{{ ticket.screen_name }}</strong>
+                            </div>
+
+                            <div class="verification-detail-item">
+                                <span>Show Date</span>
+                                <strong>{{ ticket.show_date }}</strong>
+                            </div>
+
+                            <div class="verification-detail-item">
+                                <span>Show Time</span>
+                                <strong>
+                                    {{ ticket.start_time_display }}
+                                    - {{ ticket.end_time_display }}
+                                </strong>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <section class="verification-status-section">
+                        <h4>Booking and Payment Status</h4>
+
+                        <div class="verification-status-grid">
+                            <div>
+                                <span>Booking</span>
+                                <strong>{{ ticket.booking_status }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Payment</span>
+                                <strong>{{ ticket.payment_status }}</strong>
+                            </div>
+
+                            <div>
+                                <span>Ticket</span>
+                                <strong>{{ ticket.ticket_status }}</strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    {% if ticket.ticket_status == 'ACTIVE'
+                          and ticket.booking_status == 'CONFIRMED'
+                          and ticket.payment_status == 'SUCCESSFUL' %}
+
+                        <div class="verification-admission-panel">
+                            <h4>Admission Requirements Met</h4>
+
+                            <p>
+                                The ticket is active, the booking is confirmed
+                                and payment is successful. You may proceed
+                                with the admission check.
+                            </p>
+
+                            <form
+                                action="{{ url_for('admit_ticket') }}"
+                                method="POST"
+                                onsubmit="return confirm('Are you sure you want to admit this customer and mark the ticket as USED?');"
+                            >
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input
+                                    type="hidden"
+                                    name="ticket_code"
+                                    value="{{ ticket.ticket_code }}"
+                                >
+
+                                <button type="submit">
+                                    Admit Customer
+                                </button>
+                            </form>
+                        </div>
+
+                    {% elif ticket.ticket_status == 'USED' %}
+
+                        <div class="verification-warning-panel">
+                            <strong>Ticket Already Used</strong>
+                            <p>
+                                This ticket has already been used.
+                                Customer admission cannot be repeated.
+                            </p>
+                        </div>
+
+                    {% else %}
+
+                        <div class="verification-warning-panel">
+                            <strong>Admission Not Permitted</strong>
+                            <p>
+                                This ticket does not meet the booking,
+                                payment or ticket-status requirements
+                                for admission.
+                            </p>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+        <footer class="verification-page-footer">
+            <a href="{{ url_for('employee_dashboard') }}">
+                Return to Employee Dashboard
+            </a>
+
+            <form action="{{ url_for('logout') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit">Logout</button>
+            </form>
+        </footer>
+
+    </main>
+
+</body>
+</html>

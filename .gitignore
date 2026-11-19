@@ -1,6 +1,36 @@
-.venv/
+
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
 .env
 .env.*
+
+# Allow an example environment template
+!.env.example
+
+# Flask instance and local database files
+instance/
+*.sqlite3
+*.db
+
+# IDE and operating system files
 .vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Python test and coverage files
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Duplicate image backup
+/static/images - backup/

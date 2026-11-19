@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard | ICCTMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="employee-dashboard-page">
+
+    <main class="employee-dashboard-container">
+
+        <header class="employee-dashboard-header">
+            <div class="employee-brand">
+                <h1>ICCTMS</h1>
+                <span>EMPLOYEE PORTAL</span>
+            </div>
+
+            <form action="{{ url_for('logout') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="employee-logout-button">
+                    Logout
+                </button>
+            </form>
+        </header>
+
+        <section class="employee-welcome">
+            <div>
+                <p class="employee-section-label">EMPLOYEE DASHBOARD</p>
+                <h2>Welcome, {{ employee.name }}</h2>
+                <p>Manage your daily cinema operations from one place.</p>
+            </div>
+        </section>
+
+        <section class="employee-profile-card">
+            <div class="employee-card-heading">
+                <h3>Employee Information</h3>
+                <span class="employee-status">Active</span>
+            </div>
+
+            <div class="employee-profile-details">
+                <div>
+                    <span>Full Name</span>
+                    <strong>{{ employee.name }}</strong>
+                </div>
+
+                <div>
+                    <span>Email Address</span>
+                    <strong>{{ employee.email }}</strong>
+                </div>
+
+                <div>
+                    <span>Position</span>
+                    <strong>{{ employee.employee_position }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="employee-operations">
+            <div class="employee-section-heading">
+                <p class="employee-section-label">WORKSPACE</p>
+                <h3>Daily Operations</h3>
+                <p>Access the tools required to serve cinema customers.</p>
+            </div>
+
+            <div class="employee-operation-card">
+                <div class="employee-operation-icon">✓</div>
+
+                <h4>Ticket Verification</h4>
+
+                <p>
+                    Verify customer tickets by checking their unique ticket
+                    codes. Review booking details and validate tickets
+                    before admitting customers into the cinema.
+                </p>
+
+                <form action="{{ url_for('verify_ticket') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <label for="ticket_code">Enter Ticket Code</label>
+
+                    <input
+                        type="text"
+                        id="ticket_code"
+                        name="ticket_code"
+                        placeholder="e.g. ICCTMS-9-86B6639E9528"
+                        required
+                    >
+
+                    <button type="submit">
+                        Verify Ticket
+                    </button>
+                </form>
+            </div>
+
+            <!-- Booking Search -->
+            <div class="employee-operation-card">
+                <div class="employee-operation-icon">⌕</div>
+
+                <h4>Booking Search</h4>
+
+                <p>
+                    Search for customer bookings using their booking
+                    reference. Review customer information, movie details,
+                    selected seats, payment status and ticket information.
+                </p>
+
+                <form action="{{ url_for('search_booking') }}" method="GET">
+                    <label for="booking_id">Enter Booking Reference</label>
+
+                    <input
+                        type="number"
+                        id="booking_id"
+                        name="booking_id"
+                        placeholder="e.g. 15"
+                        min="1"
+                        required
+                    >
+
+                    <button type="submit">
+                        Search Booking
+                    </button>
+                </form>
+            </div>
+
+        </section>
+
+        <footer class="employee-dashboard-footer">
+            <p>ICCTMS &copy; 2026. Integrated Cinema Ticketing Management System.</p>
+        </footer>
+
+    </main>
+
+</body>
+</html>

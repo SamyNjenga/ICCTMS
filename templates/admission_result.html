@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Result | ICCTMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="admission-result-page">
+
+    <main class="admission-result-container">
+
+        <header class="admission-result-header">
+            <div class="verification-brand">
+                <h1>ICCTMS</h1>
+                <span>EMPLOYEE PORTAL</span>
+            </div>
+
+            <a href="{{ url_for('employee_dashboard') }}">
+                Back to Dashboard
+            </a>
+        </header>
+
+        <section class="admission-result-content">
+
+            {% if success %}
+
+                <div class="admission-result-card admission-success-card">
+
+                    <div class="admission-result-icon success-icon">
+                        &#10003;
+                    </div>
+
+                    <p class="admission-result-label">ADMISSION PROCESS</p>
+
+                    <h2>Admission Successful</h2>
+
+                    <p class="admission-result-message">
+                        {{ message }}
+                    </p>
+
+                    <div class="admission-ticket-reference">
+                        <span>TICKET REFERENCE</span>
+                        <strong>{{ ticket_code }}</strong>
+                    </div>
+
+                    <div class="admission-final-status success-final-status">
+                        <span>Ticket Status</span>
+                        <strong>USED</strong>
+                    </div>
+
+                    <p class="admission-result-note">
+                        The customer has been admitted successfully.
+                        This ticket cannot be used for another admission.
+                    </p>
+
+                </div>
+
+            {% else %}
+
+                <div class="admission-result-card admission-rejected-card">
+
+                    <div class="admission-result-icon rejected-icon">
+                        &#10005;
+                    </div>
+
+                    <p class="admission-result-label">ADMISSION PROCESS</p>
+
+                    <h2>Admission Rejected</h2>
+
+                    <p class="admission-result-message">
+                        {{ message }}
+                    </p>
+
+                    <div class="admission-ticket-reference">
+                        <span>TICKET REFERENCE</span>
+                        <strong>{{ ticket_code }}</strong>
+                    </div>
+
+                    <div class="admission-final-status rejected-final-status">
+                        <span>Ticket Status</span>
+                        <strong>Not Changed</strong>
+                    </div>
+
+                    <p class="admission-result-note">
+                        Customer admission was not completed.
+                        No ticket status was changed.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+            <div class="admission-result-actions">
+                <a href="{{ url_for('employee_dashboard') }}">
+                    Return to Employee Dashboard
+                </a>
+            </div>
+
+        </section>
+
+        <footer class="admission-result-footer">
+            <p>ICCTMS &copy; 2026. Integrated Cinema Ticketing Management System.</p>
+        </footer>
+
+    </main>
+
+</body>
+</html>

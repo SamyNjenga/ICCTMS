@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Management | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<div class="manager-container">
+
+    <div class="manager-movie-heading">
+        <h2>Booking Management</h2>
+
+
+<!-- Booking Search and Filters -->
+<section class="manager-card booking-filter-section">
+
+    <h3>Search and Filter Bookings</h3>
+
+    <form method="GET"
+          action="{{ url_for('manager_bookings') }}"
+          class="booking-filter-form">
+
+        <div class="booking-filter-group">
+            <label for="search">Search Bookings</label>
+
+            <input
+                type="text"
+                id="search"
+                name="search"
+                placeholder="Booking ID, customer name, email or movie"
+                value="{{ search or '' }}"
+            >
+        </div>
+
+        <div class="booking-filter-group">
+            <label for="booking_status">Booking Status</label>
+
+            <select id="booking_status" name="booking_status">
+                <option value="">All Booking Statuses</option>
+
+                <option value="PENDING"
+                    {% if booking_status == 'PENDING' %}selected{% endif %}>
+                    Pending
+                </option>
+
+                <option value="CONFIRMED"
+                    {% if booking_status == 'CONFIRMED' %}selected{% endif %}>
+                    Confirmed
+                </option>
+
+                <option value="FAILED"
+                    {% if booking_status == 'FAILED' %}selected{% endif %}>
+                    Failed
+                </option>
+
+                <option value="CANCELLED"
+                    {% if booking_status == 'CANCELLED' %}selected{% endif %}>
+                    Cancelled
+                </option>
+
+                <option value="EXPIRED"
+                    {% if booking_status == 'EXPIRED' %}selected{% endif %}>
+                    Expired
+                </option>
+            </select>
+        </div>
+
+        <div class="booking-filter-group">
+            <label for="payment_status">Payment Status</label>
+
+            <select id="payment_status" name="payment_status">
+                <option value="">All Payment Statuses</option>
+
+                <option value="PENDING"
+                    {% if payment_status == 'PENDING' %}selected{% endif %}>
+                    Pending
+                </option>
+
+                <option value="SUCCESSFUL"
+                    {% if payment_status == 'SUCCESSFUL' %}selected{% endif %}>
+                    Successful
+                </option>
+
+                <option value="FAILED"
+                    {% if payment_status == 'FAILED' %}selected{% endif %}>
+                    Failed
+                </option>
+
+                <option value="REFUNDED"
+                    {% if payment_status == 'REFUNDED' %}selected{% endif %}>
+                    Refunded
+                </option>
+
+                <option value="NOT_PAID"
+                    {% if payment_status == 'NOT_PAID' %}selected{% endif %}>
+                    Not Paid
+                </option>
+            </select>
+        </div>
+
+        <div class="booking-filter-actions">
+            <button type="submit" class="manager-edit-button">
+                Apply Filters
+            </button>
+
+            <a href="{{ url_for('manager_bookings') }}"
+               class="manager-back-link">
+                Reset
+            </a>
+        </div>
+
+    </form>
+
+</section>
+
+
+        <a href="{{ url_for('manager_dashboard') }}"
+           class="manager-back-link">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <section class="manager-profile">
+
+        <h3>Customer Bookings</h3>
+
+        <p>Review and oversee customer reservations and payments.</p>
+
+        <div class="manager-movie-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Movie</th>
+                        <th>Cinema</th>
+                        <th>Show Date</th>
+                        <th>Total Amount</th>
+                        <th>Booking Status</th>
+                        <th>Payment Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>#{{ booking.booking_id }}</td>
+
+                        <td>
+                            {{ booking.customer_name }}
+                            <br>
+                            <small>{{ booking.customer_email }}</small>
+                        </td>
+
+                        <td>{{ booking.movie_title }}</td>
+
+                        <td>{{ booking.cinema_name }}</td>
+
+                        <td>
+                            {{ booking.show_date }}
+                            <br>
+                            <small>{{ booking.start_time }}</small>
+                        </td>
+
+                        <td>
+                            KSh {{ "%.2f"|format(booking.total_amount) }}
+                        </td>
+
+                        <td>{{ booking.booking_status }}</td>
+
+                        <td>
+                            {{ booking.payment_status or "NOT PAID" }}
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for('manager_booking_details',
+                                                booking_id=booking.booking_id) }}"
+                            class="manager-edit-button">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="9">
+                            No bookings have been recorded yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            Total bookings:
+            <strong>{{ bookings|length }}</strong>
+        </p>
+
+    </section>
+
+</div>
+
+<script>
+    document.querySelectorAll(".flash-message").forEach(message => {
+        setTimeout(() => {
+            message.style.transition = "opacity 0.5s ease";
+            message.style.opacity = "0";
+
+            setTimeout(() => message.remove(), 500);
+        }, 4000);
+    });
+</script>
+
+</body>
+</html>

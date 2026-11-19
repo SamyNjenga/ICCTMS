@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment | ICCTMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="payment-page">
+
+    <main class="payment-container">
+
+        <header class="payment-header">
+            <div class="payment-brand">
+                <h1>ICCTMS</h1>
+                <span>CINEMA TICKETING</span>
+            </div>
+
+            <span class="payment-step">CHECKOUT</span>
+        </header>
+
+                <a href="{{ url_for('seat_selection',
+                            showtime_id=booking.showtime_id,
+                            seat_ids=booking.seat_ids) }}"
+           class="payment-back-link">
+            &larr; Back to Seat Selection
+        </a>
+
+        <section class="payment-welcome">
+            <p class="payment-label">SECURE CHECKOUT</p>
+            <h2>Complete Your Payment</h2>
+            <p>You're one step away from enjoying your movie experience.</p>
+        </section>
+
+        <div class="payment-layout">
+
+            <!-- Booking Summary -->
+            <section class="payment-details">
+
+                <div class="payment-card-heading">
+                    <h3>Booking Summary</h3>
+                    <span class="payment-reference-label">BOOKING DETAILS</span>
+                </div>
+
+                <div class="payment-reference">
+                    <span>Booking Reference</span>
+                    <strong>#{{ booking.booking_id }}</strong>
+                </div>
+
+                <div class="payment-amount">
+                    <span>Total Amount Due</span>
+                    <h2>
+                        KSh {{ "%.2f"|format(booking.total_amount) }}
+                    </h2>
+                </div>
+
+                <div class="payment-status-row">
+                    <span>Booking Status</span>
+                    <strong>{{ booking.booking_status }}</strong>
+                </div>
+
+                <div class="payment-notice">
+                    <span class="payment-notice-icon">ⓘ</span>
+                    <p>
+                        Please select your preferred payment method to
+                        continue with your booking.
+                    </p>
+                </div>
+
+            </section>
+
+            <!-- Payment Method Selection -->
+            <section class="payment-selection">
+
+                <div class="payment-card-heading">
+                    <h3>Payment Method</h3>
+                    <p>Choose how you would like to pay.</p>
+                </div>
+
+                <form method="POST"
+                      action="{{ url_for('process_payment',
+                                         booking_id=booking.booking_id) }}">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="payment-methods">
+
+                        <label class="payment-method-option">
+                            <input
+                                type="radio"
+                                name="payment_method"
+                                value="MOBILE_MONEY"
+                                required
+                            >
+
+                            <span class="payment-method-content">
+                                <span class="payment-method-icon">M</span>
+
+                                <span class="payment-method-text">
+                                    <strong>Mobile Money</strong>
+                                    <small>Mobile payment option</small>
+                                </span>
+
+                                <span class="payment-radio"></span>
+                            </span>
+                        </label>
+
+                        <label class="payment-method-option">
+                            <input
+                                type="radio"
+                                name="payment_method"
+                                value="CARD"
+                            >
+
+                            <span class="payment-method-content">
+                                <span class="payment-method-icon">▤</span>
+
+                                <span class="payment-method-text">
+                                    <strong>Card Payment</strong>
+                                    <small>Debit or credit card option</small>
+                                </span>
+
+                                <span class="payment-radio"></span>
+                            </span>
+                        </label>
+
+                        <label class="payment-method-option">
+                            <input
+                                type="radio"
+                                name="payment_method"
+                                value="OTHER"
+                            >
+
+                            <span class="payment-method-content">
+                                <span class="payment-method-icon">•••</span>
+
+                                <span class="payment-method-text">
+                                    <strong>Other</strong>
+                                    <small>Alternative payment option</small>
+                                </span>
+
+                                <span class="payment-radio"></span>
+                            </span>
+                        </label>
+
+                    </div>
+
+                    <button type="submit" class="payment-submit-button">
+                        Proceed to Payment
+                        <span>→</span>
+                    </button>
+
+                    <p class="payment-footer-note">
+                        ICCTMS payment processing is currently simulated
+                        for demonstration purposes.
+                    </p>
+
+                </form>
+
+            </section>
+
+        </div>
+
+        <footer class="payment-page-footer">
+            <p>ICCTMS &copy; 2026. Integrated Cinema Ticketing Management System.</p>
+        </footer>
+
+    </main>
+
+</body>
+</html>

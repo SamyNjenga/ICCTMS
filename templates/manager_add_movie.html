@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Movie | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="manager-page">
+
+    <main class="manager-container">
+
+        <header class="manager-header">
+            <div class="manager-brand">
+                ICCTMS CINEMA TICKETING
+            </div>
+
+            <div class="manager-account">
+                <span>{{ session.get("manager_name") }}</span>
+                <span class="manager-role">MANAGER</span>
+            </div>
+        </header>
+
+        <section class="manager-welcome">
+            <p class="manager-label">MANAGEMENT PORTAL</p>
+            <h1>Add New Movie</h1>
+            <p>Enter the details of the movie you want to register.</p>
+        </section>
+
+        <section class="manager-profile manager-form-section">
+
+            <h2>Movie Information</h2>
+
+            {% if error %}
+                <div class="manager-form-error">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('add_movie') }}"
+                  class="manager-movie-form">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="manager-form-group">
+                    <label for="title">Movie Title *</label>
+                    <input type="text"
+                           id="title"
+                           name="title"
+                           maxlength="200"
+                           required>
+                </div>
+
+                <div class="manager-form-group">
+                    <label for="genre">Genre *</label>
+                    <input type="text"
+                           id="genre"
+                           name="genre"
+                           maxlength="100"
+                           placeholder="e.g. Action / Adventure"
+                           required>
+                </div>
+
+                <div class="manager-form-group">
+                    <label for="duration">Duration (minutes) *</label>
+                    <input type="number"
+                           id="duration"
+                           name="duration"
+                           min="1"
+                           step="1"
+                           required>
+                </div>
+
+                <div class="manager-form-group">
+                    <label for="release_date">Release Date</label>
+                    <input type="date"
+                           id="release_date"
+                           name="release_date">
+                </div>
+
+                <div class="manager-form-group">
+                    <label for="rating">Rating (out of 10)</label>
+                    <input type="number"
+                           id="rating"
+                           name="rating"
+                           min="0"
+                           max="10"
+                           step="0.1"
+                           placeholder="e.g. 8.5">
+                </div>
+
+                <div class="manager-form-group">
+                    <label for="description">Movie Description</label>
+                    <textarea id="description"
+                              name="description"
+                              rows="5"
+                              placeholder="Enter a short description of the movie..."></textarea>
+                </div>
+
+                <div class="manager-form-actions">
+                    <button type="submit" class="manager-add-button">
+                        Save Movie
+                    </button>
+
+                    <a href="{{ url_for('manager_movies') }}"
+                       class="manager-cancel-button">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+            <br><br>
+            <a href="{{ url_for('manager_movies') }}"
+   class="manager-back-link">
+    ← Back to Movies
+</a>
+
+        </section>
+
+        <footer class="manager-footer">
+            ICCTMS | Manager Portal
+        </footer>
+
+    </main>
+
+</body>
+</html>

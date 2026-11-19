@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<div class="manager-container">
+
+    <div class="manager-movie-heading">
+        <h2>Booking Details</h2>
+
+        <a href="{{ url_for('manager_bookings') }}"
+           class="manager-back-link">
+            Back to Bookings
+        </a>
+    </div>
+
+    <section class="manager-card">
+        <h3>Booking Overview</h3>
+
+        <p><strong>Booking ID:</strong> #{{ booking.booking_id }}</p>
+        <p><strong>Booking Date:</strong> {{ booking.booking_date }}</p>
+        <p><strong>Total Amount:</strong> KSh {{ "%.2f"|format(booking.total_amount) }}</p>
+        <p><strong>Booking Status:</strong> {{ booking.booking_status }}</p>
+    </section>
+
+    <section class="manager-card">
+        <h3>Customer Information</h3>
+
+        <p><strong>Name:</strong> {{ booking.customer_name }}</p>
+        <p><strong>Email:</strong> {{ booking.customer_email }}</p>
+        <p><strong>Phone:</strong> {{ booking.customer_phone or "Not provided" }}</p>
+    </section>
+
+    <section class="manager-card">
+        <h3>Movie and Showtime Information</h3>
+
+        <p><strong>Movie:</strong> {{ booking.movie_title }}</p>
+        <p><strong>Genre:</strong> {{ booking.genre }}</p>
+        <p><strong>Duration:</strong> {{ booking.duration }} minutes</p>
+        <p><strong>Cinema:</strong> {{ booking.cinema_name }}</p>
+        <p><strong>Location:</strong> {{ booking.cinema_location }}</p>
+        <p><strong>Screen:</strong> {{ booking.screen_name }}</p>
+        <p><strong>Show Date:</strong> {{ booking.show_date }}</p>
+        <p><strong>Start Time:</strong> {{ booking.start_time }}</p>
+        <p><strong>End Time:</strong> {{ booking.end_time }}</p>
+    </section>
+
+    <section class="manager-card">
+        <h3>Booked Seats</h3>
+
+        {% if seats %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Seat Number</th>
+                        <th>Seat Type</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for seat in seats %}
+                    <tr>
+                        <td>{{ seat.seat_number }}</td>
+                        <td>{{ seat.seat_type }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No seats are associated with this booking.</p>
+        {% endif %}
+    </section>
+
+    <section class="manager-card">
+        <h3>Payment Information</h3>
+
+        {% if booking.payment_id %}
+            <p><strong>Payment ID:</strong> #{{ booking.payment_id }}</p>
+            <p><strong>Amount:</strong> KSh {{ "%.2f"|format(booking.payment_amount) }}</p>
+            <p><strong>Payment Method:</strong> {{ booking.payment_method }}</p>
+            <p><strong>Payment Status:</strong> {{ booking.payment_status }}</p>
+            <p><strong>Payment Date:</strong> {{ booking.payment_date }}</p>
+            <p><strong>Transaction Reference:</strong> {{ booking.transaction_reference or "Not available" }}</p>
+        {% else %}
+            <p>No payment record exists for this booking.</p>
+        {% endif %}
+    </section>
+
+    <section class="manager-card">
+        <h3>Ticket Information</h3>
+
+        {% if booking.ticket_id %}
+            <p><strong>Ticket ID:</strong> #{{ booking.ticket_id }}</p>
+            <p><strong>Ticket Code:</strong> {{ booking.ticket_code }}</p>
+            <p><strong>Issue Date:</strong> {{ booking.issue_date }}</p>
+            <p><strong>Ticket Status:</strong> {{ booking.ticket_status }}</p>
+        {% else %}
+            <p>No ticket has been generated for this booking.</p>
+        {% endif %}
+    </section>
+
+    <section class="manager-card">
+        <h3>Reservation History</h3>
+
+        {% if reservations %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reservation ID</th>
+                        <th>Reservation Date</th>
+                        <th>Status</th>
+                        <th>Expiry Time</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for reservation in reservations %}
+                    <tr>
+                        <td>#{{ reservation.reservation_id }}</td>
+                        <td>{{ reservation.reservation_date }}</td>
+                        <td>{{ reservation.reservation_status }}</td>
+                        <td>{{ reservation.expiry_time or "Not specified" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No reservation records found.</p>
+        {% endif %}
+    </section>
+
+</div>
+
+</body>
+</html>

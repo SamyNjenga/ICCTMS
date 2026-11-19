@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Customer | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="manager-page">
+
+    <main class="manager-container">
+
+        <header class="manager-header">
+            <div class="manager-brand">
+                ICCTMS CINEMA TICKETING
+            </div>
+
+            <div class="manager-account">
+                <span>{{ session.get("manager_name") }}</span>
+                <span class="manager-role">MANAGER</span>
+            </div>
+        </header>
+
+        <section class="manager-welcome">
+            <p class="manager-label">MANAGEMENT PORTAL</p>
+            <h1>Edit Customer</h1>
+            <p>Update the customer's personal and account information.</p>
+        </section>
+
+        <section class="manager-profile">
+
+            <h2>Customer Information</h2>
+
+            {% if error %}
+                <div class="manager-form-error">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST"
+                  action="{{ url_for('edit_customer', customer_id=customer.customer_id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="manager-form-group">
+                    <label for="name">Full Name</label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ customer.name }}"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+
+                <div class="manager-form-group">
+                    <label for="email">Email Address</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ customer.email }}"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+
+                <div class="manager-form-group">
+                    <label for="phone">Phone Number</label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value="{{ customer.phone or '' }}"
+                        maxlength="20"
+                    >
+                </div>
+
+                <div class="manager-form-group">
+                    <label for="username">Username</label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value="{{ customer.username }}"
+                        maxlength="50"
+                        required
+                    >
+                </div>
+
+                <div class="manager-form-group">
+                    <label>Current Account Status</label>
+
+                    <p>{{ customer.account_status }}</p>
+                    <small>
+                        Account status is managed separately.
+                    </small>
+                </div>
+
+                <div class="manager-movie-actions">
+
+                    <button type="submit" class="manager-add-button">
+                        Save Changes
+                    </button>
+
+                    <a href="{{ url_for('manager_customers') }}"
+                       class="manager-back-link">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <a href="{{ url_for('manager_customers') }}"
+           class="manager-back-link">
+            ← Back to Customers
+        </a>
+
+        <footer class="manager-footer">
+            ICCTMS | Manager Portal
+        </footer>
+
+    </main>
+
+</body>
+</html>

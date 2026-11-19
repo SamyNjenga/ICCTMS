@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Digital Ticket | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <main class="ticket-container">
+<header class="ticket-header">
+    <div class="brand-logo">
+        <div class="brand-icon">
+            <span>▶</span>
+        </div>
+
+        <div class="brand-name">
+            <h1>ICCTMS</h1>
+            <span>CINEMA TICKETING</span>
+        </div>
+    </div>
+
+    <p>Your Digital Cinema Ticket</p>
+</header>
+
+        <section class="digital-ticket">
+
+            <div class="ticket-brand-strip"></div>
+            <div class="ticket-title">
+                <h2>{{ ticket.movie_title }}</h2>
+                <p>{{ ticket.genre }}</p>
+            </div>
+
+            <div class="ticket-code-section">
+    <span>YOUR UNIQUE TICKET CODE</span>
+    <h3>{{ ticket.ticket_code }}</h3>
+    <p>Present this code at the cinema entrance.</p>
+</div>
+
+            <div class="ticket-details">
+
+                <div>
+                    <strong>Booking Reference</strong>
+                    <p>#{{ ticket.booking_id }}</p>
+                </div>
+
+                <div>
+                    <strong>Ticket Code</strong>
+                    <p>{{ ticket.ticket_code }}</p>
+                </div>
+
+                <div>
+                    <strong>Cinema</strong>
+                    <p>{{ ticket.cinema_name }}</p>
+                </div>
+
+                <div>
+                    <strong>Location</strong>
+                    <p>{{ ticket.cinema_location }}</p>
+                </div>
+
+                <div>
+                    <strong>Screen</strong>
+                    <p>{{ ticket.screen_name }}</p>
+                </div>
+
+                <div>
+                    <strong>Show Date</strong>
+                    <p>{{ ticket.show_date }}</p>
+                </div>
+
+                <div>
+                    <strong>Show Time</strong>
+                    <p>
+                        {{ ticket.start_time_display }}
+                        - {{ ticket.end_time_display }}
+                    </p>
+                </div>
+
+                <div>
+                    <strong>Seats</strong>
+                    <p>{{ ticket.booked_seats }}</p>
+                </div>
+
+                <div>
+                    <strong>Total Paid</strong>
+                    <p>
+                        KSh {{ "%.2f"|format(ticket.total_amount) }}
+                    </p>
+                </div>
+
+                <div>
+                    <strong>Payment Method</strong>
+                    <p>{{ ticket.payment_method }}</p>
+                </div>
+
+            </div>
+
+            <div class="ticket-status">
+                <p>
+                    <strong>Payment:</strong>
+                    {{ ticket.payment_status }}
+                </p>
+
+                <p>
+                    <strong>Ticket Status:</strong>
+                    {{ ticket.ticket_status }}
+                </p>
+            </div>
+
+            <div class="ticket-footer">
+                <p>
+                    Please present this ticket when entering the cinema.
+                </p>
+
+                <p>
+                    Keep your ticket code safe.
+                </p>
+            </div>
+
+        </section>
+
+        <div class="ticket-actions">
+
+            <button onclick="window.print()">
+                Print Ticket
+            </button>
+
+            <a href="{{ url_for('home') }}">
+                Return to Home
+            </a>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

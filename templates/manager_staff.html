@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="manager-page">
+
+<main class="manager-container">
+
+    <header class="manager-header">
+        <div class="manager-brand">
+            <h2>ICCTMS</h2>
+            <span>Manager Portal</span>
+        </div>
+
+        <div class="manager-account">
+            <span class="manager-role">MANAGER</span>
+        </div>
+    </header>
+
+    <section class="manager-welcome">
+        <span class="manager-label">STAFF MANAGEMENT</span>
+        <h1>Employee Records</h1>
+        <p>View, search and manage employee accounts.</p>
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="manager-form-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <section class="manager-movie-heading">
+        <div>
+            <h2>Staff Directory</h2>
+            <p>Manage employee information and account access.</p>
+        </div>
+
+        
+    </section>
+
+    <form method="GET"
+          action="{{ url_for('manager_staff') }}"
+          class="manager-movie-actions">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search ID, name, email, position or username..."
+            value="{{ search }}"
+        >
+
+        <select name="account_status">
+            <option value="">All Account Statuses</option>
+
+            <option value="ACTIVE"
+                {% if account_status == 'ACTIVE' %}selected{% endif %}>
+                Active
+            </option>
+
+            <option value="INACTIVE"
+                {% if account_status == 'INACTIVE' %}selected{% endif %}>
+                Inactive
+            </option>
+
+            <option value="SUSPENDED"
+                {% if account_status == 'SUSPENDED' %}selected{% endif %}>
+                Suspended
+            </option>
+        </select>
+
+        <button type="submit" class="manager-add-button">
+            Search
+        </button>
+
+        <a href="{{ url_for('manager_staff') }}"
+           class="manager-back-link">
+            Reset
+        </a>
+
+    </form>
+
+    <section class="manager-movie-table-wrapper">
+
+        <table class="manager-movie-table">
+
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Full Name</th>
+                    <th>Email Address</th>
+                    <th>Job Position</th>
+                    <th>Username</th>
+                    <th>Account Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for employee in staff %}
+
+                    <tr>
+                        <td>{{ employee.employee_id }}</td>
+                        <td>{{ employee.name }}</td>
+                        <td>{{ employee.email }}</td>
+                        <td>{{ employee.employee_position }}</td>
+                        <td>{{ employee.username }}</td>
+                        <td>{{ employee.account_status }}</td>
+
+                        <td>
+                            <a href="{{ url_for('edit_staff', employee_id=employee.employee_id) }}"
+                               class="manager-edit-button">
+                                Edit
+                            </a>
+
+                            <form method="POST"
+                                  action="{{ url_for('update_staff_status', employee_id=employee.employee_id) }}">
+                                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                                <select name="account_status" required>
+                                    <option value="ACTIVE"
+                                        {% if employee.account_status == 'ACTIVE' %}selected{% endif %}>
+                                        Active
+                                    </option>
+
+                                    <option value="INACTIVE"
+                                        {% if employee.account_status == 'INACTIVE' %}selected{% endif %}>
+                                        Inactive
+                                    </option>
+
+                                    <option value="SUSPENDED"
+                                        {% if employee.account_status == 'SUSPENDED' %}selected{% endif %}>
+                                        Suspended
+                                    </option>
+                                </select>
+
+                                <button type="submit"
+                                        class="manager-delete-button">
+                                    Update Status
+                                </button>
+
+                            </form>
+                        </td>
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="7">
+                            No employee records found.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+    <a href="{{ url_for('manager_dashboard') }}"
+           class="manager-back-link">
+            Back to Dashboard
+        </a>
+
+    <footer class="manager-footer">
+        <p>ICCTMS &copy; 2026 | Staff Management</p>
+    </footer>
+
+</main>
+
+</body>
+</html>

@@ -3,16 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICCTMS</title>
+
+    <title>ICCTMS | Cinema Ticketing</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
-    <h1>Integrated Cloud-Based Cinema Ticketing Management System</h1>
+    <!-- Navigation Bar -->
+    <header class="navbar">
 
-    <p>Welcome to ICCTMS.</p>
+        <div class="logo">
+            ICCTMS
+        </div>
+
+        <nav class="nav-links">
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('movies') }}">Movies</a>
+    <a href="{{ url_for('about') }}">About</a>
+    <a href="{{ url_for('contact') }}">Contact</a>
+</nav>
+
+        
+<div class="nav-actions">
+    {% if session.get('customer_id') %}
+        <span class="login-link">
+            Welcome, {{ session.get('customer_name', 'Customer') }}
+        </span>
+
+        <form action="{{ url_for('logout') }}" method="POST" class="logout-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="register-btn">Logout</button>
+        </form>
+    {% else %}
+        <a href="{{ url_for('login') }}" class="login-link">Login</a>
+        <a href="{{ url_for('register') }}" class="register-btn">Register</a>
+    {% endif %}
+</div>
+
+
+    </header>
+
+
+    <!-- Hero Section -->
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <p class="hero-label">
+                    INTEGRATED CINEMA TICKETING
+                </p>
+
+                <h1>
+                    Your Movie Experience,
+                    <span>Made Simple.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Discover movies, choose your preferred showtime,
+                    select your seats and manage your cinema tickets
+                    from one convenient platform.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="/movies" class="primary-btn">
+                        Browse Movies
+                    </a>
+
+                    <a href="#" class="secondary-btn">
+                        Learn More
+                    </a>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        
+<!-- Now Showing Section -->
+<section class="movies-section">
+
+    <div class="section-heading">
+
+        <div>
+            <p class="section-label">NOW SHOWING</p>
+
+            <h2>Movies You Can Watch</h2>
+        </div>
+
+        <a href="/movies" class="view-all">
+            View All Movies →
+        </a>
+
+    </div>
+
+    <div class="movie-grid">
+
+        {% if movies %}
+
+            {% for movie in movies %}
+
+                <article class="movie-card">
+
+                    <div class="movie-poster">
+
+                        {% if movie.movie_id == 5 %}
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/spiderman-brand-new-day.jpg') }}"
+                                 alt="Spider-Man: Brand New Day poster">
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/spiderman-brand-new-day-2.jpg') }}"
+                                 alt="Spider-Man: Brand New Day alternate poster"
+                                 hidden>
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/spiderman-brand-new-day-3.jpg') }}"
+                                 alt="Spider-Man: Brand New Day alternate poster"
+                                 hidden>
+
+                        {% elif movie.movie_id == 6 %}
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/street-fighter.jpg') }}"
+                                 alt="Street Fighter poster">
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/street-fighter-2.jpg') }}"
+                                 alt="Street Fighter alternate poster"
+                                 hidden>
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/street-fighter-3.jpg') }}"
+                                 alt="Street Fighter alternate poster"
+                                 hidden>
+
+                        {% elif movie.movie_id == 7 %}
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/forgotten-island.jpg') }}"
+                                 alt="Forgotten Island poster">
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/forgotten-island-2.jpg') }}"
+                                 alt="Forgotten Island alternate poster"
+                                 hidden>
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/forgotten-island-3.jpg') }}"
+                                 alt="Forgotten Island alternate poster"
+                                 hidden>
+
+                        {% elif movie.movie_id == 8 %}
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/whalefall.jpeg') }}"
+                                 alt="Whalefall poster">
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/whalefall-2.jpeg') }}"
+                                 alt="Whalefall alternate poster"
+                                 hidden>
+
+                            <img class="poster-carousel-image"
+                                 src="{{ url_for('static', filename='images/whalefall-3.jpeg') }}"
+                                 alt="Whalefall alternate poster"
+                                 hidden>
+
+
+                            {% elif movie.movie_id in [11, 12, 13, 14, 15, 16, 17, 18, 19, 20] %}
+
+    {% set poster_slugs = {
+        11: 'verity',
+        12: 'clayface',
+        13: 'the-odyssey',
+        14: 'sunrise-on-the-reaping',
+        15: 'ramayana-rise-of-a-legend',
+        16: 'how-to-rob-a-bank',
+        17: 'wild-horse-nine',
+        18: 'hexed',
+        19: 'avengers-doomsday',
+        20: 'dune-part-three'
+    } %}
+
+    {% set poster_slug = poster_slugs[movie.movie_id] %}
+
+    {% for poster_number in range(1, 4) %}
+        {% set poster_suffix = '' if poster_number == 1 else '-' ~ poster_number %}
+        {% set poster_filename = 'images/' ~ poster_slug ~ poster_suffix ~ '.jpg' %}
+
+        <img class="poster-carousel-image"
+             src="{{ url_for('static', filename=poster_filename) }}"
+             alt="{{ movie.title }} poster {{ poster_number }}"
+             {% if poster_number > 1 %}hidden{% endif %}>
+    {% endfor %}
+
+                        {% else %}
+
+                            <span>Poster coming soon</span>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="movie-info">
+
+                        <h3>{{ movie.title }}</h3>
+
+                        <p>
+                            {{ movie.genre }} · {{ movie.duration }} min
+                        </p>
+
+                        <a href="{{ url_for('movie_details', movie_id=movie.movie_id) }}"
+                           class="movie-btn">
+                            View Details
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No movies are currently available.</p>
+
+
+{% endif %}
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <p>
+            © 2026 ICCTMS. Integrated Cloud-Based Cinema Ticketing Management System.
+        </p>
+
+    </footer>
+
+<script src="{{ url_for('static', filename='js/movie-carousel.js') }}" defer></script>
+
 
 </body>
 </html>

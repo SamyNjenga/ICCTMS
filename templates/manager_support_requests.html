@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Requests | ICCTMS</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">ICCTMS</div>
+
+    <nav class="nav-links">
+        <a href="{{ url_for('manager_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('manager_bookings') }}">Bookings</a>
+        <a href="{{ url_for('manager_support_requests') }}" class="active">
+            Support Requests
+        </a>
+    </nav>
+
+    <div class="nav-actions">
+        <a href="{{ url_for('logout') }}" class="login-btn">Logout</a>
+    </div>
+</header>
+
+<main class="manager-support-page">
+
+    <section class="manager-support-header">
+        <p class="section-label">CUSTOMER SERVICE</p>
+        <h1>Support Requests</h1>
+        <p>
+            Review enquiries submitted by customers and visitors.
+        </p>
+    </section>
+
+    <section class="manager-support-table-container">
+
+        <div class="manager-support-table-heading">
+            <h2>All Enquiries</h2>
+            <span>{{ support_requests|length }} request(s)</span>
+        </div>
+
+        {% if support_requests %}
+
+        <div class="manager-support-table-wrapper">
+            <table class="manager-support-table">
+
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Sender</th>
+                        <th>Subject</th>
+                        <th>Date Submitted</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in support_requests %}
+                    <tr>
+                        <td>#{{ item.request_id }}</td>
+
+                        <td>
+                            <strong>{{ item.sender_name or "Unknown Sender" }}</strong>
+                            <small>{{ item.sender_email or "No email available" }}</small>
+                        </td>
+
+                        <td>{{ item.subject }}</td>
+
+                        <td>
+                            {{ item.created_at.strftime('%d %b %Y, %H:%M') if item.created_at else 'N/A' }}
+                        </td>
+
+                        <td>
+                            <span class="support-status {{ item.status|lower }}">
+                                {{ item.status.replace('_', ' ') }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <a
+                                href="{{ url_for('manager_support_request_details', request_id=item.request_id) }}"
+                                class="support-view-button"
+                            >
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+
+        <div class="manager-support-empty">
+            <h3>No Support Requests Yet</h3>
+            <p>Submitted enquiries will appear here.</p>
+        </div>
+
+        {% endif %}
+
+    </section>
+
+    <div class="manager-support-back">
+        <a href="{{ url_for('manager_dashboard') }}">
+            Back to Manager Dashboard
+        </a>
+    </div>
+
+</main>
+
+<footer class="footer">
+    <p>&copy; 2026 Integrated Cloud-Based Cinema Ticketing Management System.</p>
+</footer>
+
+</body>
+</html>

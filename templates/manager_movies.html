@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Management | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="manager-page">
+
+    <main class="manager-container">
+
+        <header class="manager-header">
+            <div class="manager-brand">
+                ICCTMS CINEMA TICKETING
+            </div>
+
+            <div class="manager-account">
+                <span>{{ session.get("manager_name") }}</span>
+                <span class="manager-role">MANAGER</span>
+            </div>
+        </header>
+
+        <section class="manager-welcome">
+            <p class="manager-label">MANAGEMENT PORTAL</p>
+            <h1>Movie Management</h1>
+            <p>View and manage movies available in the cinema system.</p>
+        </section>
+
+        <section class="manager-profile">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="manager-form-{{ 'error' if category == 'error' else 'success' }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+            <div class="manager-movie-heading">
+    <h2>Movies Library</h2>
+
+    <div class="manager-movie-actions">
+        <span>{{ movies|length }} Movies</span>
+
+        <a href="{{ url_for('add_movie') }}"
+           class="manager-add-button">
+            + Add New Movie
+        </a>
+    </div>
+</div>
+
+            {% if movies %}
+
+            <div class="manager-movie-table-wrapper">
+                <table class="manager-movie-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Movie Title</th>
+                            <th>Genre</th>
+                            <th>Duration</th>
+                            <th>Release Date</th>
+                            <th>Rating</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for movie in movies %}
+                        <tr>
+                            <td>{{ movie.movie_id }}</td>
+                            <td>{{ movie.title }}</td>
+                            <td>{{ movie.genre }}</td>
+                            <td>{{ movie.duration }} min</td>
+                            <td>
+                                {{ movie.release_date or "Not specified" }}
+                            </td>
+                            <td>
+                                {{ movie.rating if movie.rating is not none else "Not rated" }}
+                            </td>
+                            
+<td>
+    <div class="manager-movie-actions">
+
+        <a href="{{ url_for('edit_movie', movie_id=movie.movie_id) }}"
+           class="manager-edit-button">
+            Edit
+        </a>
+
+        <form method="POST"
+              action="{{ url_for('delete_movie', movie_id=movie.movie_id) }}"
+              onsubmit="return confirm('Are you sure you want to delete this movie?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <button type="submit" class="manager-delete-button">
+                Delete
+            </button>
+
+        </form>
+
+    </div>
+</td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% else %}
+
+            <p>No movies are currently available.</p>
+
+            {% endif %}
+
+        </section>
+
+        <a href="{{ url_for('manager_dashboard') }}"
+           class="manager-back-link">
+            ← Back to Dashboard
+        </a>
+
+        <footer class="manager-footer">
+            ICCTMS | Manager Portal
+        </footer>
+
+    </main>
+
+</body>
+</html>

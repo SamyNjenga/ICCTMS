@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>About Us | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+
+        <div class="logo">
+            ICCTMS
+        </div>
+
+        <nav class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('movies') }}">Movies</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+        </nav>
+
+        <div class="nav-actions">
+            {% if session.get('customer_id') %}
+                <span class="login-link">
+                    Welcome, {{ session.get('customer_name', 'Customer') }}
+                </span>
+
+                <form action="{{ url_for('logout') }}" method="POST">
+                      class="logout-form">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="register-btn">Logout</button>
+                </form>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="login-link">Login</a>
+            {% endif %}
+        </div>
+
+    </header>
+
+    <main>
+
+        <section class="about-page">
+
+            <div class="about-hero">
+                <p class="section-label">GET TO KNOW US</p>
+
+                <h1>About <span>ICCTMS</span></h1>
+
+                <p>
+                    Making cinema experiences simpler, smarter and more
+                    convenient through technology.
+                </p>
+            </div>
+
+            <div class="about-content">
+
+                <section class="about-section">
+                    <p class="section-label">WHO WE ARE</p>
+                    <h2>Bringing the Cinema Experience Closer to You</h2>
+
+                    <p>
+                        The Integrated Cloud-Based Cinema Ticketing
+                        Management System (ICCTMS) is a digital platform
+                        designed to simplify how customers discover movies,
+                        book cinema tickets and manage their reservations.
+                    </p>
+
+                    <p>
+                        By bringing essential cinema services together in
+                        one platform, ICCTMS provides a convenient way for
+                        customers to explore available movies, choose
+                        showtimes, select seats and complete their bookings.
+                    </p>
+                </section>
+
+                <section class="about-section">
+                    <p class="section-label">OUR MISSION</p>
+                    <h2>Making Every Booking Easier</h2>
+
+                    <p>
+                        Our mission is to improve the cinema ticketing
+                        experience through an accessible and reliable
+                        digital system that reduces the inconvenience
+                        associated with traditional ticket booking.
+                    </p>
+                </section>
+
+                <section class="about-section">
+                    <p class="section-label">WHAT WE OFFER</p>
+                    <h2>One Platform, Multiple Possibilities</h2>
+
+                    <div class="about-features">
+
+                        <div class="about-feature">
+                            <h3>Movie Discovery</h3>
+                            <p>
+                                Explore available movies and their
+                                descriptions before making a booking.
+                            </p>
+                        </div>
+
+                        <div class="about-feature">
+                            <h3>Easy Reservations</h3>
+                            <p>
+                                Choose preferred showtimes and select
+                                available seats conveniently.
+                            </p>
+                        </div>
+
+                        <div class="about-feature">
+                            <h3>Secure Booking Management</h3>
+                            <p>
+                                Manage reservations and access digital
+                                tickets through the platform.
+                            </p>
+                        </div>
+
+                        <div class="about-feature">
+                            <h3>Efficient Cinema Operations</h3>
+                            <p>
+                                Provide cinema employees and managers
+                                with tools for managing bookings,
+                                showtimes and other operations.
+                            </p>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="about-cta">
+                    <h2>Ready for Your Next Movie?</h2>
+
+                    <p>
+                        Discover what's showing and find your next
+                        cinema experience.
+                    </p>
+
+                    <a href="{{ url_for('movies') }}" class="primary-btn">
+                        Explore Movies
+                    </a>
+                </section>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>
+            © 2026 ICCTMS. Integrated Cloud-Based Cinema Ticketing
+            Management System.
+        </p>
+    </footer>
+
+</body>
+</html>

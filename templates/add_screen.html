@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Screen | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="manager-container">
+
+    <div class="manager-movie-heading">
+        <h2>Register New Screen</h2>
+
+        <a href="{{ url_for('manager_cinemas') }}"
+           class="manager-back-link">
+            Back to Cinema Management
+        </a>
+    </div>
+
+    <section class="manager-profile">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="manager-form-{{ 'error' if category == 'error' else 'success' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST"
+              action="{{ url_for('add_screen') }}"
+              class="manager-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-group">
+                <label for="cinema_id">Select Cinema</label>
+
+                <select id="cinema_id"
+                        name="cinema_id"
+                        required>
+                    <option value="">Choose a cinema</option>
+
+                    {% for cinema in cinemas %}
+                        <option value="{{ cinema.cinema_id }}">
+                            {{ cinema.name }} — {{ cinema.location }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="screen_name">Screen Name</label>
+
+                <input type="text"
+                       id="screen_name"
+                       name="screen_name"
+                       placeholder="e.g. Screen 3"
+                       maxlength="100"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="capacity">Seating Capacity</label>
+
+                <input type="number"
+                            id="capacity"
+                            name="capacity"
+                            min="5"
+                            step="5"
+                            placeholder="e.g. 50"
+                            required>
+            </div>
+
+            <div class="manager-movie-actions">
+
+                <button type="submit"
+                        class="manager-edit-button">
+                    Register Screen
+                </button>
+
+                <a href="{{ url_for('manager_cinemas') }}"
+                   class="manager-back-link">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+</body>
+</html>

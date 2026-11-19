@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs | ICCTMS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="audit-page">
+
+        <header class="page-header">
+            <h1>Audit Logs</h1>
+            <p>Monitor and review activities performed within ICCTMS.</p>
+
+            <a href="{{ url_for('manager_dashboard') }}"
+               class="btn btn-secondary">
+                Back to Dashboard
+            </a>
+        </header>
+
+        <section class="audit-summary">
+            <h2>Activity Records</h2>
+            <p>
+                Total matching records:
+                <strong>{{ total_logs }}</strong>
+            </p>
+        </section>
+
+        <!-- Search and filters -->
+        <section class="audit-filters">
+
+            <form method="GET"
+                  action="{{ url_for('manager_audit_logs') }}">
+
+                <div class="filter-group">
+                    <label for="search">Search records</label>
+
+                    <input
+                        type="text"
+                        id="search"
+                        name="search"
+                        value="{{ search }}"
+                        placeholder="Search ID, username, action or description"
+                    >
+                </div>
+
+                <div class="filter-group">
+                    <label for="action">Action type</label>
+
+                    <select id="action" name="action">
+                        <option value="">All actions</option>
+
+                        {% for item in actions %}
+                            <option
+                                value="{{ item.action }}"
+                                {% if selected_action == item.action %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ item.action }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="date_from">From date</label>
+
+                    <input
+                        type="date"
+                        id="date_from"
+                        name="date_from"
+                        value="{{ date_from }}"
+                    >
+                </div>
+
+                <div class="filter-group">
+                    <label for="date_to">To date</label>
+
+                    <input
+                        type="date"
+                        id="date_to"
+                        name="date_to"
+                        value="{{ date_to }}"
+                    >
+                </div>
+
+                <div class="filter-buttons">
+                    <button type="submit" class="btn btn-primary">
+                        Apply Filters
+                    </button>
+
+                    <a href="{{ url_for('manager_audit_logs') }}"
+                       class="btn btn-secondary">
+                        Clear Filters
+                    </a>
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- Audit records table -->
+        <section class="audit-table-section">
+
+            <div class="table-responsive">
+
+                <table class="audit-table">
+
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Description</th>
+                            <th>Date & Time</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for log in logs %}
+
+                            <tr>
+                                <td>{{ log.log_id }}</td>
+
+                                <td>
+                                    {% if log.username %}
+                                        {{ log.username }}
+                                    {% elif log.user_id %}
+                                        User #{{ log.user_id }}
+                                    {% else %}
+                                        System / Unknown
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <span class="audit-action">
+                                        {{ log.action }}
+                                    </span>
+                                </td>
+
+                                <td class="audit-description">
+                                    {{ log.description or "No description available" }}
+                                </td>
+
+                                <td>
+                                    {{ log.timestamp.strftime("%d %b %Y, %H:%M:%S") }}
+                                </td>
+                            </tr>
+
+                        {% else %}
+
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    No audit records found.
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+
+            <nav class="pagination" aria-label="Audit log pages">
+
+                {% if page > 1 %}
+                    <a href="{{ url_for(
+                        'manager_audit_logs',
+                        page=page-1,
+                        search=search,
+                        action=selected_action,
+                        date_from=date_from,
+                        date_to=date_to
+                    ) }}">
+                        Previous
+                    </a>
+                {% endif %}
+
+                <span>
+                    Page {{ page }} of {{ total_pages }}
+                </span>
+
+                {% if page < total_pages %}
+                    <a href="{{ url_for(
+                        'manager_audit_logs',
+                        page=page+1,
+                        search=search,
+                        action=selected_action,
+                        date_from=date_from,
+                        date_to=date_to
+                    ) }}">
+                        Next
+                    </a>
+                {% endif %}
+
+            </nav>
+
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

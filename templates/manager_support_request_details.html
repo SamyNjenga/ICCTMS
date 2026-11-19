@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Request Details | ICCTMS</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">ICCTMS</div>
+
+    <nav class="nav-links">
+        <a href="{{ url_for('manager_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('manager_support_requests') }}" class="active">
+            Support Requests
+        </a>
+    </nav>
+
+    <div class="nav-actions">
+        <a href="{{ url_for('logout') }}" class="login-btn">Logout</a>
+    </div>
+</header>
+
+<main class="manager-support-page">
+
+    <section class="manager-support-header">
+        <p class="section-label">CUSTOMER SERVICE</p>
+        <h1>Request #{{ support_request.request_id }}</h1>
+        <p>Review the enquiry and update its current status.</p>
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="contact-alert {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <section class="support-details-card">
+
+        <div class="support-details-heading">
+            <h2>{{ support_request.subject }}</h2>
+
+            <span class="support-status {{ support_request.status|lower }}">
+                {{ support_request.status.replace('_', ' ') }}
+            </span>
+        </div>
+
+        <div class="support-sender-details">
+
+            <div>
+                <span>Sender Name</span>
+                <strong>{{ support_request.sender_name or "Unknown Sender" }}</strong>
+            </div>
+
+            <div>
+                <span>Email Address</span>
+                <strong>{{ support_request.sender_email or "No email available" }}</strong>
+            </div>
+
+            <div>
+                <span>Customer ID</span>
+                <strong>{{ support_request.customer_id or "Guest" }}</strong>
+            </div>
+
+            <div>
+                <span>Date Submitted</span>
+                <strong>
+                    {{ support_request.created_at.strftime('%d %B %Y, %H:%M') if support_request.created_at else 'N/A' }}
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="support-message">
+            <h3>Message</h3>
+            <p>{{ support_request.description }}</p>
+        </div>
+
+        <div class="support-status-update">
+
+            <h3>Update Request Status</h3>
+
+            <form
+                action="{{ url_for('manager_support_request_details', request_id=support_request.request_id) }}"
+                method="POST"
+            >
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label for="status">Request Status</label>
+
+                    <select id="status" name="status" required>
+                        {% for status in valid_statuses %}
+                            <option
+                                value="{{ status }}"
+                                {% if support_request.status == status %}selected{% endif %}
+                            >
+                                {{ status.replace('_', ' ') }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="primary-btn">
+                    Update Status
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <div class="manager-support-back">
+        <a href="{{ url_for('manager_support_requests') }}">
+            Back to Support Requests
+        </a>
+    </div>
+
+</main>
+
+<footer class="footer">
+    <p>&copy; 2026 Integrated Cloud-Based Cinema Ticketing Management System.</p>
+</footer>
+
+</body>
+</html>

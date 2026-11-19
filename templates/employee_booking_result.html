@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details | ICCTMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="employee-dashboard-page">
+
+    <main class="employee-dashboard-container">
+
+        <header class="employee-dashboard-header">
+            <div class="employee-brand">
+                <h1>ICCTMS</h1>
+                <span>EMPLOYEE PORTAL</span>
+            </div>
+
+            <a href="{{ url_for('employee_dashboard') }}" class="employee-back-link">
+                Back to Dashboard
+            </a>
+        </header>
+
+        <section class="employee-welcome">
+            <div>
+                <p class="employee-section-label">BOOKING MANAGEMENT</p>
+                <h2>Booking Details</h2>
+                <p>Review customer reservations and their payment information.</p>
+            </div>
+        </section>
+
+        {% if error %}
+
+            <section class="employee-booking-message">
+                <h3>Booking Not Found</h3>
+                <p>{{ error }}</p>
+
+                <a href="{{ url_for('employee_dashboard') }}">
+                    Return to Dashboard
+                </a>
+            </section>
+
+        {% elif booking %}
+
+            <section class="employee-booking-card">
+
+                <div class="employee-booking-heading">
+                    <div>
+                        <p class="employee-section-label">BOOKING REFERENCE</p>
+                        <h3>#{{ booking.booking_id }}</h3>
+                    </div>
+
+                    <span class="booking-status-badge status-{{ booking.booking_status|lower }}">
+                        {{ booking.booking_status }}
+                    </span>
+                </div>
+
+                <div class="employee-booking-section">
+                    <h3>Customer Information</h3>
+
+                    <div class="employee-booking-grid">
+                        <div>
+                            <span>Customer Name</span>
+                            <strong>{{ booking.customer_name }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Email Address</span>
+                            <strong>{{ booking.customer_email }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Phone Number</span>
+                            <strong>{{ booking.customer_phone or 'Not provided' }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Booking Date</span>
+                            <strong>{{ booking.booking_date }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="employee-booking-section">
+                    <h3>Movie and Showtime</h3>
+
+                    <div class="employee-booking-grid">
+                        <div>
+                            <span>Movie</span>
+                            <strong>{{ booking.movie_title }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Genre</span>
+                            <strong>{{ booking.movie_genre }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Duration</span>
+                            <strong>{{ booking.movie_duration }} minutes</strong>
+                        </div>
+
+                        <div>
+                            <span>Show Date</span>
+                            <strong>{{ booking.show_date }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Start Time</span>
+                            <strong>{{ booking.start_time }}</strong>
+                        </div>
+
+                        <div>
+                            <span>End Time</span>
+                            <strong>{{ booking.end_time }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="employee-booking-section">
+                    <h3>Cinema and Seats</h3>
+
+                    <div class="employee-booking-grid">
+                        <div>
+                            <span>Cinema</span>
+                            <strong>{{ booking.cinema_name }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Location</span>
+                            <strong>{{ booking.cinema_location }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Screen</span>
+                            <strong>{{ booking.screen_name }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Booked Seats</span>
+                            <strong>{{ booking.booked_seats or 'No seats recorded' }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="employee-booking-section">
+                    <h3>Payment Information</h3>
+
+                    <div class="employee-booking-grid">
+                        <div>
+                            <span>Booking Total</span>
+                            <strong>KSh {{ booking.total_amount }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Payment Amount</span>
+                            <strong>
+                                {% if booking.payment_amount is not none %}
+                                    KSh {{ booking.payment_amount }}
+                                {% else %}
+                                    Not recorded
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Payment Method</span>
+                            <strong>{{ booking.payment_method or 'Not recorded' }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Payment Status</span>
+                            <strong>{{ booking.payment_status or 'No payment record' }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Payment Date</span>
+                            <strong>{{ booking.payment_date or 'Not recorded' }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Transaction Reference</span>
+                            <strong>{{ booking.transaction_reference or 'Not available' }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="employee-booking-section">
+                    <h3>Ticket Information</h3>
+
+                    <div class="employee-booking-grid">
+                        <div>
+                            <span>Ticket Code</span>
+                            <strong>{{ booking.ticket_code or 'Not generated' }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Ticket Status</span>
+                            <strong>{{ booking.ticket_status or 'No ticket generated' }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Issue Date</span>
+                            <strong>{{ booking.issue_date or 'Not available' }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        {% endif %}
+
+        <footer class="employee-dashboard-footer">
+            <p>ICCTMS &copy; 2026. Integrated Cinema Ticketing Management System.</p>
+        </footer>
+
+    </main>
+
+</body>
+</html>
